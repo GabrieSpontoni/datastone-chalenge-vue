@@ -8,7 +8,7 @@ type Client = {
   document: string
   phone: string
   email: string
-  active: string
+  active: boolean
 }
 
 const clients = ref<Client[]>([])
@@ -19,7 +19,7 @@ const selectedClient = reactive<Client>({
   document: '',
   phone: '',
   email: '',
-  active: ''
+  active: false
 })
 
 onMounted(async () => {

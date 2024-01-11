@@ -4,7 +4,7 @@ export const clients: {
   document: string
   phone: string
   email: string
-  active: string
+  active: boolean
 }[] = [
   {
     id: '1',
