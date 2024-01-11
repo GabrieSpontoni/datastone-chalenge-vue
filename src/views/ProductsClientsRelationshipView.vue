@@ -1,4 +1,44 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { onMounted, ref, reactive } from 'vue'
+import { clientApi } from '@/api/client'
+
+type Client = {
+  id: string
+  name: string
+  document: string
+  phone: string
+  email: string
+  active: string
+}
+
+const clients = ref<Client[]>([])
+const selectedClientId = ref<string | null>(null)
+const selectedClient = reactive<Client>({
+  id: '',
+  name: '',
+  document: '',
+  phone: '',
+  email: '',
+  active: ''
+})
+
+onMounted(async () => {
+  const response = (await clientApi.get()) as { data: { clients: Client[] } }
+  clients.value = response.data.clients
+})
+
+const handleSelectClient = () => {
+  const selectedClientData = clients.value.find(client => client.id === selectedClientId.value)
+  if (selectedClientData) {
+    selectedClient.id = selectedClientData.id
+    selectedClient.name = selectedClientData.name
+    selectedClient.document = selectedClientData.document
+    selectedClient.phone = selectedClientData.phone
+    selectedClient.email = selectedClientData.email
+    selectedClient.active = selectedClientData.active
+  }
+}
+</script>
 
 <template>
   <div>
@@ -13,11 +53,16 @@
     </div>
     <div class="form">
       <h1>Clientes</h1>
-      <input placeholder="nome" class="input" />
-      <input placeholder="documento" class="input" />
-      <input placeholder="telefone" class="input" />
-      <input placeholder="e-mail" class="input" />
-      <select placeholder="ativo" class="input">
+      <select v-model="selectedClientId" class="input" @change="handleSelectClient">
+        <option :value="null" disabled>Selecione um cliente</option>
+        <option v-for="client in clients" :key="client.id" :value="client.id">
+          {{ client?.name }}
+        </option>
+      </select>
+      <input placeholder="documento" class="input" v-model="selectedClient.document" />
+      <input placeholder="telefone" class="input" v-model="selectedClient.phone" />
+      <input placeholder="e-mail" class="input" v-model="selectedClient.email" />
+      <select placeholder="ativo" class="input" v-model="selectedClient.active">
         <option selected disabled>Ativo</option>
         <option value="true">Sim</option>
         <option value="false">Não</option>

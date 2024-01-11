@@ -14,6 +14,7 @@ watch([clientName, clientDocument, clientPhone, clientEmail, clientActive], () =
 
 const createClient = async () => {
   await clientApi.create({
+    id: Math.random().toString(36).substr(2, 9),
     name: clientName.value,
     document: clientDocument.value,
     phone: clientPhone.value,
